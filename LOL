@@ -1,0 +1,42 @@
+//Include your Line class
+#include "chartersauce25_HW7.h"
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    // Create a color image that is 500 by 500 pixels
+    unsigned width = 500, height = 500;
+    image< rgb_pixel > myImage(width,height);
+
+    // List out the vertex points for a star. shapeX holds the x coordinates,
+    // and shapeY has the y coordinates
+    int points = 11;
+    int shapeX[11] = {250,315,495,350,400,250,100,150,5,185,250};
+    int shapeY[11] = {0,170,180,290,465,365,465,290,180,170,0};
+
+    // Create an object of new data type Line
+    Line myLine;
+    // Change the color of myLine to Hot Pink
+
+    myLine.setColor(255,105,180);
+
+    // Go through each of the vertex points for the star and draw lines
+    for (int ii = 0; ii < points-1; ++ii)
+    {
+        //Set X and Y for Point 1
+        myLine.point1[0] = shapeX[ii];
+        myLine.point1[1] = shapeY[ii];
+        // Set X and Y for Point 2
+        myLine.point2[0] = shapeX[ii+1];
+        myLine.point2[1] = shapeY[ii+1];
+        // Draw the current line
+        myLine.draw(myImage);
+    }
+    // Save the Star image to file
+    myImage.write("Star.png");
+    return 0;
+}
+
+
