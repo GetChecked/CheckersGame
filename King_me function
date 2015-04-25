@@ -1,0 +1,15 @@
+4/25 4:28PM
+void king_me(char b[8][8])// turns pieces into kings if conditions are met
+{
+	for (int ii = 0; ii < 8; ++ii)
+	{
+		if (b[0][ii] == 'r')
+		{
+			b[0][ii] = 'R';
+		}
+		else if (b[7][ii] == 'b')
+		{
+			b[7][ii] = 'B';
+		}
+	}
+}
