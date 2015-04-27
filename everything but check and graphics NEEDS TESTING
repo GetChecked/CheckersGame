@@ -1,0 +1,268 @@
+//Kenneth Fernandez and Allan Martin checkers 
+//4/18/15 4:20 PM graphics
+//4/25/15 3:10 PM king_me game_on game_over
+//4/25/15 5:15 PM black and red pieces and updated game over
+//4/27/15 7:00 PM added Allan's move, imputmove, and pickpiece
+
+#include <iostream>
+using namespace std; 
+
+void display_board(char board[8][8]); //every outside function has to be passed a board array 
+void king_me(char board [8][8]);
+int b_pieces(char board[8][8]);
+int r_pieces(char board[8][8]);
+void game_over(char board [8][8]);
+void move(char(&board)[8][8]);
+void inputMove();
+void pickpiece();
+int checkMove();
+
+bool game_on = true;
+char initialrow = 0;
+int initialcolumn = 0;
+char finalrow = 0;
+int finalcolumn = 0;
+int Red_Score = 0;
+int Black_Score = 0;
+
+int main()
+{	
+	char board[8][8] =									//	An 2D array holding each Location, Color, and Type:
+		{												//		
+			{ ' ', 'b', ' ', 'b', ' ', 'b', ' ', 'b' },	//		
+			{ 'b', ' ', 'b', ' ', 'b', ' ', 'b', ' ' },	//	Location is the array board [ii][jj]
+			{ ' ', 'b', ' ', 'b', ' ', 'b', ' ', 'b' },	//		
+			{ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },	//	Color is either r or b (red or black)
+			{ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },	//			
+			{ 'r', ' ', 'r', ' ', 'r', ' ', 'r', ' ' },	//	Type is either lowercase or uppercase
+			{ ' ', 'r', ' ', 'r', ' ', 'r', ' ', 'r' },	//		Lowercase for unkinged (r and b)
+			{ 'r', ' ', 'r', ' ', 'r', ' ', 'r', ' ' },	//		Uppercase for kinged (R and B)
+		};												//			
+	
+	while (game_on == true)
+	{
+		display_board(board);//	Outside display function called
+		move(board);
+		king_me(board);// checks to see if pieces are kinged
+		b_pieces(board);
+		r_pieces(board);
+		game_over(board);// determines the piece number left and changes the game_on to true or false MUST BE LAST IN THE WHILE LOOP!!
+
+		Red_Score = b_pieces(board);
+		Black_Score = r_pieces(board);
+
+		cout << "Red Score : " << Red_Score << endl;
+		cout << "Black Score : " << Black_Score << endl;
+
+	}
+
+	if (Red_Score > Black_Score)
+	{
+		cout << "Red Wins!!" << endl;
+	}
+	else if (Black_Score > Red_Score)
+	{
+		cout << "Black Wins!!" << endl;
+	}
+
+	cout << "game over" << endl;
+	
+
+	system("PAUSE");
+	return 0;
+}
+
+// functions----------------------------------------------------------------------------------------------------
+void display_board(char b[8][8])//Outside display function
+{
+	cout << "  ==================================================================================\n\n\n";
+	cout << "        0         1         2         3         4         5         6         7     \n";
+	cout << "   _________________________________________________________________________________\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " A |    " << b[0][0] << "    |    " << b[0][1] << "    |    " << b[0][2] << "    |    " << b[0][3] << "    |    " << b[0][4] << "    |    " << b[0][5] << "    |    " << b[0][6] << "    |    " << b[0][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " B |    " << b[1][0] << "    |    " << b[1][1] << "    |    " << b[1][2] << "    |    " << b[1][3] << "    |    " << b[1][4] << "    |    " << b[1][5] << "    |    " << b[1][6] << "    |    " << b[1][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " C |    " << b[2][0] << "    |    " << b[2][1] << "    |    " << b[2][2] << "    |    " << b[2][3] << "    |    " << b[2][4] << "    |    " << b[2][5] << "    |    " << b[2][6] << "    |    " << b[2][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " D |    " << b[3][0] << "    |    " << b[3][1] << "    |    " << b[3][2] << "    |    " << b[3][3] << "    |    " << b[3][4] << "    |    " << b[3][5] << "    |    " << b[3][6] << "    |    " << b[3][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " E |    " << b[4][0] << "    |    " << b[4][1] << "    |    " << b[4][2] << "    |    " << b[4][3] << "    |    " << b[4][4] << "    |    " << b[4][5] << "    |    " << b[4][6] << "    |    " << b[4][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " F |    " << b[5][0] << "    |    " << b[5][1] << "    |    " << b[5][2] << "    |    " << b[5][3] << "    |    " << b[5][4] << "    |    " << b[5][5] << "    |    " << b[5][6] << "    |    " << b[5][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " G |    " << b[6][0] << "    |    " << b[6][1] << "    |    " << b[6][2] << "    |    " << b[6][3] << "    |    " << b[6][4] << "    |    " << b[6][5] << "    |    " << b[6][6] << "    |    " << b[6][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << " H |    " << b[7][0] << "    |    " << b[7][1] << "    |    " << b[7][2] << "    |    " << b[7][3] << "    |    " << b[7][4] << "    |    " << b[7][5] << "    |    " << b[7][6] << "    |    " << b[7][7] << "    |\n";
+	cout << "   |         |         |         |         |         |         |         |         |\n";
+	cout << "   |_________|_________|_________|_________|_________|_________|_________|_________|\n";
+}
+
+void move(char(&board)[8][8])
+{
+	pickpiece();
+	while (true)
+	{
+
+		inputMove();
+		
+		int row1 = 0;
+		int row2 = 0;
+		row1 = initialrow - 65; //changes the capital letters to the arrays values
+		row2 = finalrow - 65;
+		char temp = 0;
+		char moveagain = 0;
+
+		checkMove();//call check move function here
+
+		switch (checkMove)
+		{
+			case 1: //regular move -> swaps the location of initial and final
+			{
+				temp = board[row2][finalcolumn];
+				board[row2][finalcolumn] = board[row1][initialcolumn];
+				board[row1][initialcolumn] = temp;
+
+				cout << "Next player.";
+				break;
+			}
+
+			case 2: //jump move -> swaps location of initial and final, also removes the piece that was jumped
+			{
+				board[((row2 - row1) / 2) + row1][((finalcolumn - initialcolumn) / 2) + initialcolumn] = ' ';
+				temp = board[row2][finalcolumn];
+				board[row2][finalcolumn] = board[row1][initialcolumn];
+				board[row1][initialcolumn] = temp;
+
+				cout << "Can you jump again? enter y or n:";
+				cin >> moveagain;
+
+				while (moveagain != 'y' || moveagain != 'n')
+				{
+					cout << "Invalid input.  Please enter y or n\n";
+					cout << "Can you like to jump again? enter y or n:";
+					cin >> moveagain;
+				}
+	
+				if (moveagain = 'y')
+				{
+					initialrow = finalrow;
+					initialcolumn = finalcolumn;
+	
+					continue;
+				}
+	
+				else if (moveagain = 'n')
+				{
+					cout << "Next player.";
+	
+					break;
+				}
+			}
+		}
+	}
+}
+
+void pickpiece()
+{
+	cout << "Please input a valid location for a friendly piece. Input in the form: A 4 \n:";
+	cin >> initialrow >> initialcolumn;
+}
+
+void inputMove()
+{
+	cout << "Please input a valid location to move the selected piece to \n: ";
+	cin >> finalrow >> finalcolumn;
+}
+
+
+void king_me(char b[8][8])// turns pieces into kings if conditions are met
+{
+	for (int ii = 0; ii < 8; ++ii)
+	{
+		if (b[0][ii] == 'r')
+		{
+			b[0][ii] = 'R';
+		}
+		else if (b[7][ii] == 'b')
+		{
+			b[7][ii] = 'B';
+		}
+	}
+}
+
+int b_pieces(char b[8][8])
+{
+	int bNum = 0;
+	for (int ii = 0; ii < 8; ++ii)
+	{
+		for (int jj = 0; jj < 8; ++jj)
+		{
+			if (b[ii][jj] == 'b' || b[ii][jj] == 'B')
+			{
+				bNum++;
+			}
+		}
+	}
+	int bTaken = 12 - bNum;
+
+	return bTaken;
+}
+
+int r_pieces(char b[8][8])
+{
+	int rNum = 0;
+	for (int ii = 0; ii < 8; ++ii)
+	{
+		for (int jj = 0; jj < 8; ++jj)
+		{
+			if (b[ii][jj] == 'r' || b[ii][jj] == 'R')
+			{
+				rNum++;
+			}
+		}
+	}
+	int rTaken = 12 - rNum;
+
+	return rTaken;
+}
+
+void game_over(char b[8][8]) // runs every turn to check the number of pieces left
+{
+	int rTaken = r_pieces(b);
+	int bTaken = b_pieces(b);
+
+	if (rTaken == 12 || bTaken == 12)
+	{
+		game_on = false;
+	}
+	
+}
+
+int checkMove()
+{
+	
+	//return 0;
+}
