@@ -1,4 +1,4 @@
-//Allan Martin attempt 1 checkers
+//Allan Martin move statement and switch statements. 5:12 4/27/15
 
 #include <iostream>
 
@@ -27,9 +27,10 @@ int main()
 
 void move(char(&board)[8][8])
 {
+	pickpiece();
 	while (true)
 	{
-		pickpiece();
+		
 		inputMove();
 		//call check move function here
 
@@ -38,6 +39,7 @@ void move(char(&board)[8][8])
 		row1 = initialrow - 65; //changes the capital letters to the arrays values
 		row2 = finalrow - 65;
 		char temp = 0;
+		char moveagain = 0;
 		
 		switch (checkMove)
 		{
@@ -47,23 +49,57 @@ void move(char(&board)[8][8])
 				board[row2][finalcolumn] = board[row1][initialcolumn];
 				board[row1][initialcolumn] = temp;
 				
-
+				cout << "Next player."
+				break;
 			}
 			case 2: //jump move -> swaps location of initial and final, also removes the piece that was jumped
 			{
-				if (board[(row2 - row1) / 2][(finalcolumn - initialcolumn) / 2] == 'r' || board[(row2 - row1) / 2][(finalcolumn - initialcolumn) / 2] == 'R')
-				{
-					//redpiecesleft -= 1; not sure whether you wanted these here or not kenneth.
-				}
-				else
-				{
-					//blackpiecesleft -=1;
-				}
-
-				board[(row2 - row1) / 2][(finalcolumn - initialcolumn) / 2] = ' ';
+				board[((row2 - row1) / 2) + row1][((finalcolumn - initialcolumn) / 2) + initialcolumn] = ' ';
 				temp = board[row2][finalcolumn];
 				board[row2][finalcolumn] = board[row1][initialcolumn];
 				board[row1][initialcolumn] = temp;
+
+				cout << "Would you like to continue your jump? enter y or n:";
+				cin >> moveagain;
+
+				if (moveagain = 'y')
+				{
+					cout << "\nPlease input the new location of the same friendly piece. Input in the form: A 4 \n:";
+					cin >> initialrow >> initialcolumn;
+					
+					continue;
+				}
+				
+				else if (moveagain = 'n')
+				{
+					cout << "Next player."
+
+						break;
+				}
+
+				else
+				{
+					cout << "Invalid input.  Please enter y or n\n"
+					cout << "Would you like to continue your jump? enter y or n:";
+					cin >> moveagain;
+
+					if (moveagain = 'y')
+					{
+						cout << "\nPlease input the new location of the same friendly piece. Input in the form: A 4 \n:";
+						cin >> initialrow >> initialcolumn;
+
+						continue;
+					}
+
+					else if (moveagain = 'n')
+					{
+						cout << "Next player."
+
+							break;
+					}
+				}
+
+				
 			}
 			
 		}
